@@ -134,7 +134,7 @@ def bilinear_resize(image, height, width):
     
 def prepare_model(chkpt_dir, arch='mae_vit_large_patch16'):
     # build model
-    model = getattr(models_mae, arch)()
+    model = getattr(models_mae, arch)(image_size=224)
     # load model
     checkpoint = torch.load(chkpt_dir, map_location='cpu')
     msg = model.load_state_dict(checkpoint['model'], strict=False)
@@ -260,11 +260,9 @@ if __name__ == "__main__":
     pretained, dataset_train, data_loader_train, data_loader_valid = generate_dataset(pretained=True)
      
     # Use the pretrained model
-    if pretained:
-        model_mae = prepare_model(data_dir.parent / 'mae_visualize_vit_large.pth', 'mae_vit_large_patch16')
+    if pretained: model_mae = prepare_model(data_dir.parent / 'mae_visualize_vit_large.pth', 'mae_vit_large_patch16')
     # train from scratch
-    else:
-        model_mae = getattr(models_mae, 'mae_vit_large_patch16')()
+    else: model_mae = getattr(models_mae, 'mae_vit_large_patch16')(image_size=128)
     model_mae.train(True)
     
     epochs = 200
