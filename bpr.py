@@ -1,9 +1,6 @@
-import nibabel as nib
 import numpy as np
 import torch
-import torch.nn as nn
 import pathlib
-import PIL.Image as Image
 import matplotlib.pyplot as plt
 import shutil
 import models_mae
@@ -185,7 +182,7 @@ def generate_dataset(pretained):
         drop_last=True,
     )
     
-    return pretained, dataset_train, data_loader_train, data_loader_valid
+    return dataset_train, data_loader_train, data_loader_valid
 
 # Run only one slices
 def sanity_check(pretained, epoch_num, image, model_mae, optimizer):
@@ -257,10 +254,11 @@ def run_all_samples(pretained, epoch_num, model_mae, optimizer, data_loader_trai
     
 if __name__ == "__main__":
     
-    pretained, dataset_train, data_loader_train, data_loader_valid = generate_dataset(pretained=True)
+    pretained=True
+    dataset_train, data_loader_train, data_loader_valid = generate_dataset(pretained)
      
     # Use the pretrained model
-    if pretained: model_mae = prepare_model(data_dir.parent / 'mae_visualize_vit_large.pth', 'mae_vit_large_patch16')
+    if pretained: model_mae = prepare_model(data_dir.parent / 'mae_visualize_vit_large_ganloss.pth', 'mae_vit_large_patch16')
     # train from scratch
     else: model_mae = getattr(models_mae, 'mae_vit_large_patch16')(image_size=128)
     model_mae.train(True)
